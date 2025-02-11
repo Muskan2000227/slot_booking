@@ -1,0 +1,52 @@
+{% block content %}
+<h2>Available Slots for the Current Week</h2>
+<!-- Logout Button -->
+<div style="text-align: right;">
+    <p style="display: inline; font-weight: bold;">Logged in as: {{ email }}</p>
+    <form action="{% url 'logout'%}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" style="background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+            Logout
+        </button>
+    </form>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <p style="color: red;">{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+{% if slots %}
+<table border="1" cellspacing="0" cellpadding="10">
+    <tr>
+        <th>Date</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Teacher</th>
+        <th>Action</th>
+    </tr>
+    {% for slot in slots %}
+    <tr>
+        <td>{{ slot.start_time|date:"Y-m-d" }}</td>
+        <td>{{ slot.start_time|time:"h:i A" }}</td>
+        <td>{{ slot.end_time|time:"h:i A" }}</td>
+        <td>{{ slot.teacher.name }}</td>
+        <td>
+            {% if slot.is_booked %}
+                <button disabled style="background-color: gray; cursor: not-allowed;">Booked</button>
+            {% else %}
+                <form action="{% url 'book_slot' slot.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Book Now</button>
+                </form>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p style="color: red; font-weight: bold;">No available slots this week.</p>
+{% endif %}
+
+{% endblock %}

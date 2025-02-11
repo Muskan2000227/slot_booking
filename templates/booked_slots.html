@@ -1,0 +1,30 @@
+
+{% block content %}
+<h2>My Booked Slots</h2>
+<table border="1">
+    <tr>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Teacher</th>
+        <th>Action</th>
+    </tr>
+    {% for slot in booked_slots %}
+    <tr>
+        <td>{{ slot.start_time }}</td>
+        <td>{{ slot.end_time }}</td>
+        <td>{{ slot.teacher.name }}</td>
+        <td>
+            <form method="POST" action="{% url 'reschedule_slot' slot.id %}">
+                {% csrf_token %}
+                <select name="new_slot_id">
+                    {% for free_slot in available_slots %}
+                    <option value="{{ free_slot.id }}">{{ free_slot.start_time }} - {{ free_slot.teacher.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Reschedule</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
