@@ -102,7 +102,7 @@ def book_slot(request, slot_id):
     # Send confirmation email
     subject = "Slot Booking Confirmation"
     message = f"Dear {user.username},\n\nYour slot on {slot.start_time.strftime('%Y-%m-%d %H:%M')} has been booked with {slot.teacher.name}."
-    email_from = "your_email@gmail.com"  # Replace with your email
+    email_from = "muskansainicse893@gmail.com"  # Replace with your email
     recipient_list = [user.email]
 
     try:
@@ -118,6 +118,5 @@ from django.shortcuts import redirect
 from django.contrib import messages
 
 def logout(request):
-    request.session.flush()  # Clears all session data
     messages.success(request, "You have been logged out successfully!")
     return redirect('login')  # Redirect to login page
