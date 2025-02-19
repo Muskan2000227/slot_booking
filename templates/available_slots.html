@@ -1,52 +1,93 @@
-{% block content %}
-<h2>Available Slots for the Current Week</h2>
-<!-- Logout Button -->
-<div style="text-align: right;">
-    <p style="display: inline; font-weight: bold;">Logged in as: {{ email }}</p>
-    <form action="{% url 'logout'%}" method="post" style="display: inline;">
-        {% csrf_token %}
-        <button type="submit" style="background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer;">
-            Logout
-        </button>
-    </form>
-</div>
-
-{% if messages %}
-    {% for message in messages %}
-        <p style="color: red;">{{ message }}</p>
-    {% endfor %}
-{% endif %}
-
-{% if slots %}
-<table border="1" cellspacing="0" cellpadding="10">
-    <tr>
-        <th>Date</th>
-        <th>Start Time</th>
-        <th>End Time</th>
-        <th>Teacher</th>
-        <th>Action</th>
-    </tr>
-    {% for slot in slots %}
-    <tr>
-        <td>{{ slot.start_time|date:"Y-m-d" }}</td>
-        <td>{{ slot.start_time|time:"h:i A" }}</td>
-        <td>{{ slot.end_time|time:"h:i A" }}</td>
-        <td>{{ slot.teacher.name }}</td>
-        <td>
-            {% if slot.is_booked %}
-                <button disabled style="background-color: gray; cursor: not-allowed;">Booked</button>
-            {% else %}
-                <form action="{% url 'book_slot' slot.id %}" method="post">
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Slots</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 900px;
+            margin-top: 30px;
+        }
+        .logout-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="text-primary">Available Slots for the Current Week</h2>
+            <div class="ms-auto text-end">
+                <span class="fw-bold me-2">Logged in as: {{ email }}</span>
+                <form action="{% url 'logout' %}" method="post" class="d-inline">
                     {% csrf_token %}
-                    <button type="submit">Book Now</button>
+                    <button type="submit" class="logout-btn">Logout</button>
                 </form>
-            {% endif %}
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<p style="color: red; font-weight: bold;">No available slots this week.</p>
-{% endif %}
+            </div>
+        </div>
 
-{% endblock %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% if slots %}
+        <div class="table-container">
+            <table class="table table-striped table-hover text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Teacher</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for slot in slots %}
+                    <tr>
+                        <td>{{ slot.start_time|date:"Y-m-d" }}</td>
+                        <td>{{ slot.start_time|time:"h:i A" }}</td>
+                        <td>{{ slot.end_time|time:"h:i A" }}</td>
+                        <td>{{ slot.teacher.name }}</td>
+                        <td>
+                            {% if slot.is_booked %}
+                                <button class="btn btn-secondary" disabled>Booked</button>
+                            {% else %}
+                                <form action="{% url 'book_slot' slot.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success">Book Now</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-warning text-center fw-bold">No available slots this week.</div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
