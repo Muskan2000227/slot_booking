@@ -2,11 +2,10 @@ from django.shortcuts import render,redirect
 from .models import register_model,Slot,Teacher
 from django.contrib import messages
 from django.utils import timezone
-
-# Create your views here.
-# def signup(request):
-#     return render(request,'signup.html')
-
+from django.shortcuts import render, get_object_or_404, redirect
+from django.utils.timezone import now
+from django.core.mail import send_mail
+from datetime import timedelta
 
 def signup(request):
     if request.method == "POST":
@@ -60,16 +59,6 @@ def available_slots(request):
 
     return render(request, "available_slots.html", {"slots": slots,"email":user_email})
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from django.utils.timezone import now
-from .models import Slot, register_model
-
-from django.core.mail import send_mail
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from django.utils.timezone import now
-from .models import Slot, register_model
 
 def book_slot(request, slot_id):
     if not request.user.is_authenticated:
@@ -111,17 +100,10 @@ def book_slot(request, slot_id):
     return redirect('available_slots')
 
 
-from django.shortcuts import redirect
-from django.contrib import messages
-
 def logout(request):
     return redirect('login')  # Redirect to login page
 
-# def addslotadmin(request):
-#     return render(request,'addslotadmin.html')
 
-
-from datetime import timedelta
 def addslotadmin(request):
     if request.method == "POST":
         start_time = request.POST.get("start_time")
@@ -154,12 +136,6 @@ def addslotadmin(request):
     slots = Slot.objects.all().order_by("start_time")  # Show upcoming slots first
 
     return render(request, "addslotadmin.html",{'teachers':teachers})
-
-
-from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
-from django.utils import timezone
-from .models import Slot, Teacher
 
 def showslotadmin(request):
     teachers = Teacher.objects.all()
@@ -194,3 +170,113 @@ def delete_slot(request, slot_id):
         return redirect('showslotadmin')
 
     return render(request, 'delete_confirm.html', {'slot': slot})
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Slot, register_model  # ✅ Import register_model
+
+def my_booked_slots(request):
+    """Show slots booked by the logged-in user based on email"""
+    user_email = request.session.get('user_email')
+
+    if not user_email:
+        messages.error(request, "User email not found. Please log in.")
+        return redirect("login")  # Redirect to login if email is missing
+
+    try:
+        user = register_model.objects.get(email=user_email)  # ✅ Fetch user from register_model
+    except register_model.DoesNotExist:
+        messages.error(request, "User not found. Please log in again.")
+        return redirect("login")
+
+    # ✅ Filter slots where the user has booked them
+    user_slots = Slot.objects.filter(booked_by=user).order_by("start_time")
+
+    return render(request, "mybookedslots.html", {"slots": user_slots})
+
+
+
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.conf import settings
+from .models import Slot, register_model
+
+def cancel_slot(request, slot_id):
+    """Allow user to cancel a booked slot based on email and send cancellation email."""
+    user_email = request.session.get("user_email")
+
+    if not user_email:
+        messages.error(request, "User email not found. Please log in.")
+        return redirect("login")  # Redirect if email is missing
+
+    user = get_object_or_404(register_model, email=user_email)  # ✅ Get user from register_model
+    slot = get_object_or_404(Slot, id=slot_id, booked_by=user)  # ✅ Ensure the slot belongs to the logged-in user
+
+    # ✅ Store slot details before cancellation
+    teacher_name = slot.teacher.name
+    start_time = slot.start_time
+    end_time = slot.end_time
+
+    # ✅ Cancel the booking
+    slot.booked_by = None  
+    slot.is_booked = False  # Optional: Mark slot as available
+    slot.save()
+
+    # ✅ Send cancellation email
+    send_mail(
+        "Your Slot Has Been Canceled",
+        f"Dear {user.username},\n\nYour slot with {teacher_name} on {start_time} - {end_time} has been successfully canceled.\n\nThank you!",
+        settings.DEFAULT_FROM_EMAIL,
+        [user.email],
+        fail_silently=False,
+    )
+
+    messages.success(request, "Your slot has been canceled successfully. A confirmation email has been sent.")
+    return redirect("mybookedslots")
+
+
+
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Slot, register_model
+from django.conf import settings
+
+def reschedule_slot(request, slot_id):
+    """Allow a user to reschedule a booked slot and notify via email."""
+    user_email = request.session.get("user_email")
+    user = get_object_or_404(register_model, email=user_email)
+
+    slot = get_object_or_404(Slot, id=slot_id, booked_by=user)
+
+    if request.method == "POST":
+        new_slot_id = request.POST.get("new_slot")
+        new_slot = get_object_or_404(Slot, id=new_slot_id, is_booked=False)
+ 
+        # Release old slot
+        slot.booked_by = None
+        slot.is_booked = False
+        slot.save()
+
+        # Assign new slot
+        new_slot.booked_by = user
+        new_slot.is_booked = True
+        new_slot.save()
+
+        # Send email for new slot confirmation
+        send_mail(
+            "Your Slot Has Been Rescheduled",
+            f"Dear {user.username},\n\nYou have successfully rescheduled your slot to {new_slot.start_time} - {new_slot.end_time} with {new_slot.teacher.name}.\n\nThank you!",
+            settings.DEFAULT_FROM_EMAIL,
+            [user.email],
+            fail_silently=False,
+        )
+
+        messages.success(request, "Your slot has been successfully rescheduled. A confirmation email has been sent.")
+        return redirect("mybookedslots")
+
+    available_slots = Slot.objects.filter(is_booked=False)
+    return render(request, "reschedule_slot.html", {"slot": slot, "available_slots": available_slots})
+

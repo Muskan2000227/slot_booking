@@ -33,5 +33,10 @@ urlpatterns = [
     path('showslotadmin/', views.showslotadmin, name='showslotadmin'),
     path('slots/update/<int:slot_id>/', views.update_slot, name='slot-update'),
     path('slots/delete/<int:slot_id>/', views.delete_slot, name='slot-delete'),
+    path("my-slots/", views.my_booked_slots, name="mybookedslots"),
+    path("cancel-slot/<int:slot_id>/", views.cancel_slot, name="cancel_slot"),
+    path("reschedule-slot/<int:slot_id>/",views.reschedule_slot, name="reschedule_slot"),
+
+
 
 ]
