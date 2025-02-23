@@ -60,8 +60,8 @@ class Slot(models.Model):
                 raise ValidationError("You have already booked a slot for this day.")
 
     def save(self, *args, **kwargs):
-        """Validate before saving and ensure end_time is correctly set."""
-        self.clean()
+        """Before saving, delete past slots"""
+        Slot.objects.filter(end_time__lt=timezone.now()).delete()
         super().save(*args, **kwargs)
 
     def book(self, user):

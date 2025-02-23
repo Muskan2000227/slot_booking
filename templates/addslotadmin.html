@@ -1,0 +1,188 @@
+{% block content %}
+<!-- Navbar -->
+<div class="navbar">
+    <div class="logo">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Logo"> <!-- Replace with your logo -->
+        <h1>AGC Admission Cell</h1>
+    </div>
+    <div class="nav-links">
+        <a href="{% url 'showslotadmin' %}"><i class="fas fa-calendar-alt"></i> Manage Slots</a>
+        <a href="{% url 'addslotadmin' %}"><i class="fas fa-plus-circle"></i> Add Slot</a>
+    </div>
+</div>
+
+<div class="container">
+    <h2>Add Slot</h2>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Start Time Input -->
+        <label for="start_time">Select Start Time:</label>
+        <input type="datetime-local" id="start_time" name="start_time" required>
+
+        <p>Selected Start Time: <span id="formatted_start_time"></span></p>
+
+        <!-- End Time Input -->
+        <label for="end_time">Select End Time:</label>
+        <input type="datetime-local" id="end_time" name="end_time" required>
+
+        <p>Selected End Time: <span id="formatted_end_time"></span></p>
+
+        <!-- Select Teacher -->
+        <label for="teacher">Select Teacher:</label>
+        <select id="teacher" name="teacher" required>
+            <option value="">-- Choose Teacher --</option>
+            {% for teacher in teachers %}
+                <option value="{{ teacher.id }}">{{ teacher.name }}</option>
+            {% endfor %}
+        </select>
+
+        
+        <button type="submit">Add Slot</button>
+    </form>
+</div>
+
+<style>
+    /* Navbar Styling */
+    .navbar {
+        background-color: #007bff;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar .logo {
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar .logo img {
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+    }
+
+    .navbar .logo h1 {
+        color: white;
+        font-size: 22px;
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .navbar .nav-links a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        font-size: 16px;
+        border-radius: 5px;
+        transition: 0.3s;
+        margin: 0 5px;
+    }
+
+    .navbar .nav-links a:hover {
+        background-color: white;
+        color: #007bff;
+    }
+
+    /* Form Styling */
+    .container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    h2 { text-align: center; }
+
+    label, select, input {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    button {
+        width: 100%;
+        background-color: #28a745;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+    }
+
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function setMinDateTime() {
+            let now = new Date();
+
+            // Round minutes up to avoid past selection issues
+            now.setMinutes(now.getMinutes() + 1);
+            now.setSeconds(0);
+
+            let year = now.getFullYear();
+            let month = String(now.getMonth() + 1).padStart(2, "0");
+            let day = String(now.getDate()).padStart(2, "0");
+            let hours = String(now.getHours()).padStart(2, "0");
+            let minutes = String(now.getMinutes()).padStart(2, "0");
+
+            let minDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+            document.getElementById("start_time").setAttribute("min", minDateTime);
+            document.getElementById("end_time").setAttribute("min", minDateTime);
+        }
+
+        function formatTo12Hour(dateTimeString) {
+            let dateObj = new Date(dateTimeString);
+            let hours = dateObj.getHours();
+            let minutes = dateObj.getMinutes();
+            let ampm = hours >= 12 ? "PM" : "AM";
+            hours = hours % 12 || 12; // Convert 0 or 12 to 12 AM/PM format
+            minutes = String(minutes).padStart(2, "0");
+            return `${hours}:${minutes} ${ampm}`;
+        }
+
+        function updateEndTime() {
+            let startInput = document.getElementById("start_time");
+            let endInput = document.getElementById("end_time");
+
+            let selectedStartTime = new Date(startInput.value);
+
+            if (!isNaN(selectedStartTime.getTime())) {
+                let endTime = new Date(selectedStartTime.getTime() + 30 * 60000); // Add 30 minutes
+                let year = endTime.getFullYear();
+                let month = String(endTime.getMonth() + 1).padStart(2, "0");
+                let day = String(endTime.getDate()).padStart(2, "0");
+                let hours = String(endTime.getHours()).padStart(2, "0");
+                let minutes = String(endTime.getMinutes()).padStart(2, "0");
+
+                let formattedEndTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+                endInput.value = formattedEndTime;
+
+                // Update display
+                document.getElementById("formatted_start_time").textContent = formatTo12Hour(startInput.value);
+                document.getElementById("formatted_end_time").textContent = formatTo12Hour(formattedEndTime);
+            }
+        }
+
+        setMinDateTime();
+
+        document.getElementById("start_time").addEventListener("focus", setMinDateTime);
+        document.getElementById("start_time").addEventListener("change", updateEndTime);
+    });
+</script>
+
+{% endblock %}

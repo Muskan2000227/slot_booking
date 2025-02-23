@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Slots</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #007bff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .navbar .logo h1 {
+            color: white;
+            font-size: 22px;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .navbar .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: 0.3s;
+            margin: 0 5px;
+        }
+
+        .navbar .nav-links a:hover {
+            background-color: white;
+            color: #007bff;
+        }
+
+        /* Page Content */
+        .container {
+            width: 90%;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 15px;
+            text-decoration: none;
+            color: white;
+            border-radius: 5px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .edit-btn { background-color: #28a745; }
+        .edit-btn:hover { background-color: #218838; }
+
+        .delete-btn { background-color: #dc3545; }
+        .delete-btn:hover { background-color: #c82333; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Logo">  <!-- Replace with your logo -->
+            <h1>AGC Admission Cell</h1>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'showslotadmin' %}"><i class="fas fa-calendar-alt"></i> Manage Slots</a>
+            <a href="{% url 'addslotadmin' %}"><i class="fas fa-plus-circle"></i> Add Slot</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Manage Slots</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Teacher</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for slot in slots %}
+                    <tr>
+                        <td>{{ slot.start_time|date:"Y-m-d h:i A" }}</td>
+                        <td>{{ slot.end_time|date:"Y-m-d h:i A" }}</td>
+                        <td>{{ slot.teacher.name }}</td>
+                        <td>
+                            {% if slot.is_booked %}
+                                <span style="color: red; font-weight: bold;">Booked</span>
+                            {% else %}
+                                <span style="color: green; font-weight: bold;">Available</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'slot-update' slot.id %}" class="btn edit-btn"><i class="fas fa-edit"></i> Edit</a>
+                            <form method="post" action="{% url 'slot-delete' slot.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn delete-btn" onclick="return confirm('Are you sure?');">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">No slots available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

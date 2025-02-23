@@ -29,5 +29,9 @@ urlpatterns = [
     path("Logout/", views.logout, name="logout"),
     path("available_slots", views.available_slots, name="available_slots"),
     path("book-slot/<int:slot_id>/", views.book_slot, name="book_slot"),
+    path("addslotadmin",views.addslotadmin,name="addslotadmin"),
+    path('showslotadmin/', views.showslotadmin, name='showslotadmin'),
+    path('slots/update/<int:slot_id>/', views.update_slot, name='slot-update'),
+    path('slots/delete/<int:slot_id>/', views.delete_slot, name='slot-delete'),
 
 ]

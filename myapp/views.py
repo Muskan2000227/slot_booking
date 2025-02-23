@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .models import register_model,Slot
+from .models import register_model,Slot,Teacher
 from django.contrib import messages
 from django.utils import timezone
 
@@ -40,7 +40,6 @@ def login(request):
             request.session['user_email'] = email 
             if user.passw == password:  # Plaintext comparison (since no hashing was used in signup)
                 request.session['user_id'] = user.id  # Store user ID in session
-                messages.success(request, "Login successful!")
                 return redirect('available_slots')  # Redirect to the home page or dashboard
             else:
                 messages.error(request, "Invalid password")
@@ -74,12 +73,10 @@ from .models import Slot, register_model
 
 def book_slot(request, slot_id):
     if not request.user.is_authenticated:
-        messages.error(request, "You need to log in to book a slot.")
         return redirect('login')
 
     user_email = request.session.get('user_email')
     if not user_email:
-        messages.error(request, "Session expired. Please log in again.")
         return redirect('login')
 
     user = get_object_or_404(register_model, email=user_email)  # Ensure correct user instance
@@ -118,5 +115,82 @@ from django.shortcuts import redirect
 from django.contrib import messages
 
 def logout(request):
-    messages.success(request, "You have been logged out successfully!")
     return redirect('login')  # Redirect to login page
+
+# def addslotadmin(request):
+#     return render(request,'addslotadmin.html')
+
+
+from datetime import timedelta
+def addslotadmin(request):
+    if request.method == "POST":
+        start_time = request.POST.get("start_time")
+        teacher_id = request.POST.get("teacher")
+
+        if not start_time or not teacher_id:
+            messages.error(request, "Please fill all fields.")
+            return redirect("addslotadmin")
+
+        # Convert start_time to timezone-aware datetime object
+        start_time = timezone.datetime.strptime(start_time, "%Y-%m-%dT%H:%M")
+        start_time = timezone.make_aware(start_time)
+
+        # Get the selected teacher
+        teacher = Teacher.objects.get(id=teacher_id)
+
+        # Create slot
+        slot = Slot.objects.create(
+            start_time=start_time,
+            end_time=start_time + timedelta(minutes=30),
+            teacher=teacher,
+            is_booked=False
+        )
+        
+        messages.success(request, "Slot added successfully!")
+        return redirect("addslotadmin")
+
+    #  #Fetch available teachers and slots
+    teachers = Teacher.objects.all()
+    slots = Slot.objects.all().order_by("start_time")  # Show upcoming slots first
+
+    return render(request, "addslotadmin.html",{'teachers':teachers})
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+from django.utils import timezone
+from .models import Slot, Teacher
+
+def showslotadmin(request):
+    teachers = Teacher.objects.all()
+    slots = Slot.objects.all().order_by("start_time")
+    print("Teachers found:", teachers)  # Debugging
+    return render(request, 'showslotadmin.html', {"teachers": teachers, "slots": slots})
+
+
+def update_slot(request, slot_id):
+    """Update a slot without Django Forms"""
+    slot = get_object_or_404(Slot, id=slot_id)
+
+    if request.method == "POST":
+        slot.start_time = request.POST.get("start_time")
+        slot.end_time = request.POST.get("end_time")
+        teacher_id = request.POST.get("teacher")
+        slot.teacher = get_object_or_404(Teacher, id=teacher_id)
+        slot.is_booked = True if request.POST.get("is_booked") == "on" else False
+        
+        slot.save()
+        return redirect('showslotadmin')  
+
+    teachers = Teacher.objects.all()
+    return render(request, 'update_slot.html', {'slot': slot, 'teachers': teachers})
+
+def delete_slot(request, slot_id):
+    """Delete a slot"""
+    slot = get_object_or_404(Slot, id=slot_id)
+    
+    if request.method == "POST":
+        slot.delete()
+        return redirect('showslotadmin')
+
+    return render(request, 'delete_confirm.html', {'slot': slot})

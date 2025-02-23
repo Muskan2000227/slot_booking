@@ -16,7 +16,7 @@
         <td>
             <form method="POST" action="{% url 'reschedule_slot' slot.id %}">
                 {% csrf_token %}
-                <select name="new_slot_id">
+                <select name="new_slot_id">  
                     {% for free_slot in available_slots %}
                     <option value="{{ free_slot.id }}">{{ free_slot.start_time }} - {{ free_slot.teacher.name }}</option>
                     {% endfor %}
