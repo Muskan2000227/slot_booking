@@ -147,20 +147,28 @@
         <h2>Reschedule Your Slot</h2>
         <p>Current Slot: {{ slot.start_time }} - {{ slot.end_time }}</p>
 
-        <form method="POST">
+        <form action="{% url 'reschedule_slot' slot.id %}" method="POST">
             {% csrf_token %}
+            
             <label for="new_slot">Select a New Slot:</label>
             <select name="new_slot" required>
                 {% for available_slot in available_slots %}
-                <option value="{{ available_slot.id }}">{{ available_slot.start_time }} - {{ available_slot.end_time }}</option>
+                    <option value="{{ available_slot.id }}">{{ available_slot.start_time }} - {{ available_slot.end_time }}</option>
                 {% endfor %}
             </select>
+            
             <br>
-            <button type="submit">Reschedule</button>
+        
+            <button type="submit" onclick="return confirmReschedule();">Reschedule</button>
         </form>
 
         <a href="{% url 'mybookedslots' %}" class="cancel-btn">Cancel & Go Back</a>
     </div>
 
 </body>
+<script>
+    function confirmReschedule() {
+        return confirm("Are you sure you want to reschedule this slot?");
+    }
+</script>
 </html>

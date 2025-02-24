@@ -165,7 +165,9 @@
                 <td>{{ slot.start_time }}</td>
                 <td>{{ slot.end_time }}</td>
                 <td>
-                    <a href="{% url 'cancel_slot' slot.id %}" class="cancel-btn">Cancel</a>
+                    <a href="{% url 'cancel_slot' slot.id %}" 
+               class="cancel-btn"
+               onclick="return confirmCancel();">Cancel</a>
                     <a href="{% url 'reschedule_slot' slot.id %}" class="reschedule-btn">Reschedule</a>
 
                 </td>
@@ -178,4 +180,10 @@
     </div>
 
 </body>
+
+<script>
+    function confirmCancel() {
+        return confirm("Are you sure you want to cancel this slot?");
+    }
+</script>
 </html>
