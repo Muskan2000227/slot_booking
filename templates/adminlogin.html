@@ -1,0 +1,457 @@
+{% extends 'navbarmain.html' %}
+{% block content %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal | AGC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;      /* Vibrant blue */
+            --primary-light: #3b82f6; /* Lighter blue */
+            --primary-dark: #1d4ed8;  /* Darker blue */
+            --accent: #93c5fd;       /* Soft blue accent */
+            --dark: #1e293b;         /* Dark navy */
+            --light: #f8fafc;       /* Lightest blue */
+            --admin-accent: #f59e0b; /* Gold accent for admin */
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Geometric Design */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            padding: 20px;
+            position: relative;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 200%;
+            background: linear-gradient(135deg, var(--accent) 0%, rgba(147,197,253,0) 70%);
+            transform: rotate(15deg);
+            z-index: 0;
+            clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 500px;
+            padding: 50px 40px;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.15);
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            overflow: hidden;
+        }
+
+        .login-card::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: -50px;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, var(--accent) 0%, rgba(147,197,253,0) 70%);
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .card-header h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+            letter-spacing: -0.5px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .card-header h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--admin-accent));
+            border-radius: 3px;
+        }
+
+        .card-header p {
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            margin-top: 15px;
+        }
+
+        .admin-icon {
+            font-size: 2.5rem;
+            color: var(--admin-accent);
+            margin-bottom: 15px;
+            background: rgba(245, 158, 11, 0.1);
+            width: 80px;
+            height: 80px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 2px solid var(--admin-accent);
+        }
+
+        /* Form Elements */
+        .form-label {
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-label i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+
+        .form-control {
+            padding: 14px 15px;
+            border: 2px solid #e0e7ff;
+            border-radius: 10px;
+            background-color: white;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .password-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(37, 99, 235, 0.1);
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .toggle-password:hover {
+            background: rgba(37, 99, 235, 0.2);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* Button with Wave Effect */
+        .btn-login {
+            background: linear-gradient(135deg, var(--primary), var(--admin-accent));
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.4s;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-login::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-login:hover::after {
+            left: 100%;
+        }
+
+        /* Alert Messages */
+        .alert-message {
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+
+        .alert-message::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 5px;
+            height: 100%;
+        }
+
+        .alert-success {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .alert-success::before {
+            background: #10b981;
+        }
+
+        .alert-danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .alert-danger::before {
+            background: #ef4444;
+        }
+
+        /* Floating Triangles */
+        .floating-shape {
+            position: absolute;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .shape-1 {
+            top: 20%;
+            left: 5%;
+            width: 100px;
+            height: 100px;
+            background: var(--primary);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .shape-2 {
+            bottom: 10%;
+            right: 10%;
+            width: 80px;
+            height: 80px;
+            background: var(--admin-accent);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            animation: float 10s ease-in-out infinite 2s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .login-container::before {
+                display: none;
+            }
+            
+            .login-card {
+                padding: 40px 25px;
+            }
+            
+            .card-header h3 {
+                font-size: 1.8rem;
+            }
+        }
+        @keyframes fadeSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes staggerFade {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-card {
+    animation: fadeSlideUp 1s ease forwards;
+}
+
+.login-card form div,
+.login-card form .password-container,
+.btn-login {
+    opacity: 0;
+    animation: staggerFade 1s ease forwards;
+}
+
+.login-card form div:nth-child(1) {
+    animation-delay: 0.3s;
+}
+
+.login-card form .password-container {
+    animation-delay: 0.6s;
+}
+
+.btn-login {
+    animation-delay: 0.9s;
+}
+
+
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.03);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+    </style>
+</head>
+<body>
+
+<!-- Floating geometric shapes -->
+<div class="floating-shape shape-1"></div>
+<div class="floating-shape shape-2"></div>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="card-header">
+            <div class="admin-icon">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h3>Admin Portal</h3>
+            <p>System Access</p>
+        </div>
+
+        {% if msg %}
+            <div class="alert-message alert-danger">
+                <i class="fas fa-exclamation-circle me-2"></i>{{ msg }}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="fas fa-envelope"></i>Admin Email
+                </label>
+                <input type="email" name="email" class="form-control" placeholder="admin@institution.edu" required>
+            </div>
+            
+            <div class="password-container">
+                <label class="form-label">
+                    <i class="fas fa-lock" ></i>Master Password
+                </label>
+                <input type="password" id="passwordInput" name="passw" class="form-control" placeholder="••••••••" required>
+                <span class="toggle-password" onclick="togglePassword()" style="margin-top: 15px;">
+                    <i class="fas fa-eye" id="eyeIcon" ></i>
+                </span>
+            </div>
+            
+            <button type="submit" class="btn btn-login">
+                <i class="fas fa-sign-in-alt me-2"></i>Authenticate
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById("passwordInput");
+        const eyeIcon = document.getElementById("eyeIcon");
+        
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
+        }
+    }
+
+    // Add ripple effect to button
+    document.querySelector('.btn-login').addEventListener('click', function(e) {
+        let x = e.clientX - e.target.getBoundingClientRect().left;
+        let y = e.clientY - e.target.getBoundingClientRect().top;
+        let ripple = document.createElement('span');
+        
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+            ripple.remove();
+        }, 1000);
+    });
+</script>
+</body>
+</html>
+{% endblock %}

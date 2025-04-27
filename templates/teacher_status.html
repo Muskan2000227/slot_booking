@@ -1,0 +1,236 @@
+{% extends 'navbaradmin.html' %}
+{% block content %}
+<div class="availability-container">
+    <!-- <div class="availability-header">
+        <h2><i class="fas fa-user-tie"></i> Teacher Availability Status</h2>
+        
+    </div> -->
+
+    <div class="availability-card" style="margin-top: 15px;">
+        <div class="table-responsive">
+            <table class="availability-table">
+                <thead>
+                    <tr>
+                        <th class="teacher-col">Teacher</th>
+                        <th class="status-col">Current Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for teacher in teachers %}
+                    <tr class="teacher-row animate__animated animate__fadeInUp" style="animation-delay: {{ forloop.counter0|add:"1" }}00ms">
+                        <td>
+                            <div class="teacher-info">
+                                <div class="teacher-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="teacher-details">
+                                    <span class="teacher-name">{{ teacher.name }}</span>
+                                    <span class="teacher-email">{{ teacher.email }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="status-container">
+                                <span class="status-badge {% if teacher.status == 'Free' %}status-available{% else %}status-busy{% endif %}">
+                                    <span class="status-icon">
+                                        <i class="fas {% if teacher.status == 'Free' %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
+                                    </span>
+                                    <span class="status-text">
+                                        {{ teacher.status }}
+                                        {% if teacher.status == 'Free' %}
+                                        <span class="status-subtext">for counseling</span>
+                                        {% else %}
+                                        <span class="status-subtext">in session</span>
+                                        {% endif %}
+                                    </span>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Content styles only - navbar remains untouched */
+    .availability-container {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .availability-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .availability-header h2 {
+        color: #4F46E5;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .availability-header .subtitle {
+        color: #64748B;
+        font-size: 1rem;
+    }
+
+    .availability-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    .availability-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .availability-table th {
+        padding: 1rem;
+        text-align: left;
+        background-color: #F8FAFC;
+        color: #475569;
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+    }
+
+    .availability-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #F1F5F9;
+    }
+
+    .teacher-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .teacher-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #E0E7FF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #4F46E5;
+    }
+
+    .teacher-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .teacher-name {
+        font-weight: 500;
+        color: #1E293B;
+    }
+
+    .teacher-email {
+        font-size: 0.8rem;
+        color: #64748B;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.9rem;
+    }
+
+    .status-available {
+        background-color: #D1FAE5;
+        color: #065F46;
+    }
+
+    .status-busy {
+        background-color: #FEE2E2;
+        color: #B91C1C;
+    }
+
+    .status-icon {
+        margin-right: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .status-text {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .status-subtext {
+        font-size: 0.7rem;
+        opacity: 0.8;
+    }
+
+    .teacher-row:hover {
+        background-color: #F8FAFC;
+    }
+
+    /* Animations */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.03); }
+        100% { transform: scale(1); }
+    }
+
+    .status-available {
+        animation: pulse 3s infinite;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .availability-container {
+            padding: 1rem;
+        }
+        
+        .teacher-info {
+            gap: 0.75rem;
+        }
+        
+        .availability-table th, 
+        .availability-table td {
+            padding: 0.75rem;
+        }
+    }
+</style>
+
+<script>
+    // Enhanced status animation
+    document.addEventListener('DOMContentLoaded', function() {
+        // Pulsing for available teachers
+        const availableBadges = document.querySelectorAll('.status-available');
+        
+        setInterval(() => {
+            availableBadges.forEach(badge => {
+                badge.classList.add('animate__animated', 'animate__pulse');
+                setTimeout(() => {
+                    badge.classList.remove('animate__animated', 'animate__pulse');
+                }, 1000);
+            });
+        }, 3000);
+        
+        // Hover effects for rows
+        const rows = document.querySelectorAll('.teacher-row');
+        rows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.05)';
+            });
+            
+            row.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+            });
+        });
+    });
+</script>
+{% endblock %}

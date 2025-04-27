@@ -1,137 +1,265 @@
+{% extends 'navbaradmin.html' %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Slots</title>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
-        /* General Styles */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #6366F1;
+            --success: #10B981;
+            --danger: #EF4444;
+            --light: #f8f9fa;
+            --dark: #1e293b;
+            --gray: #94a3b8;
+            --animation-duration: 0.8s;
+            --slow-animation: 1.2s;
         }
 
-        /* Navbar */
-        .navbar {
-            background-color: #007bff;
-            padding: 15px 20px;
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            color: #334155;
+        }
+
+        .dashboard-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn var(--slow-animation) ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            animation: fadeInDown var(--animation-duration) ease-out;
         }
 
-        .navbar .logo {
-            display: flex;
-            align-items: center;
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .navbar .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .navbar .logo h1 {
-            color: white;
-            font-size: 22px;
+        .page-title {
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 1.8rem;
             margin: 0;
-            font-weight: bold;
+            position: relative;
         }
 
-        .navbar .nav-links a {
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 3px;
+            animation: growWidth var(--slow-animation) ease-out forwards;
+        }
+
+        @keyframes growWidth {
+            from { width: 0; }
+            to { width: 60px; }
+        }
+
+        .add-btn {
+            background: var(--primary);
             color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
             text-decoration: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            border-radius: 5px;
-            transition: 0.3s;
-            margin: 0 5px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.4s ease;
         }
 
-        .navbar .nav-links a:hover {
-            background-color: white;
-            color: #007bff;
+        .add-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
         }
 
-        /* Page Content */
-        .container {
-            width: 90%;
-            margin: 30px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-
-        /* Table */
-        table {
+        .slots-table {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+            border-collapse: separate;
+            border-spacing: 0;
             background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            animation: zoomIn var(--slow-animation) ease-out;
         }
 
-        th, td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        th {
-            background-color: #007bff;
+        .slots-table thead {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: white;
         }
 
-        tr:hover {
-            background-color: #f2f2f2;
+        .slots-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 500;
         }
 
-        /* Buttons */
-        .btn {
-            padding: 8px 15px;
+        .slots-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+            transition: all 0.4s ease;
+        }
+
+        .slots-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .slots-table tr {
+            animation: fadeInUp var(--animation-duration) ease-out;
+            animation-fill-mode: both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slots-table tr:hover td {
+            background-color: #f8fafc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.4s ease;
+        }
+
+        .status-available {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-booked {
+            background-color: #FEE2E2;
+            color: #B91C1C;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
             text-decoration: none;
-            color: white;
-            border-radius: 5px;
-            font-size: 14px;
+            transition: all 0.4s ease;
             border: none;
             cursor: pointer;
-            transition: 0.3s;
+            transform: scale(1);
         }
 
-        .edit-btn { background-color: #28a745; }
-        .edit-btn:hover { background-color: #218838; }
+        .edit-btn {
+            background-color: var(--success);
+            color: white;
+        }
 
-        .delete-btn { background-color: #dc3545; }
-        .delete-btn:hover { background-color: #c82333; }
+        .edit-btn:hover {
+            background-color: #0D9F6E;
+            transform: translateY(-2px) scale(1.05);
+        }
 
+        .delete-btn {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #C92B3A;
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+            animation: fadeIn var(--slow-animation) ease-out;
+        }
+
+        /* Status pulse animation */
+        @keyframes gentlePulse {
+            0% { transform: scale(1); box-shadow: none; }
+            50% { transform: scale(1.03); box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+            100% { transform: scale(1); box-shadow: none; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 1rem;
+            }
+            
+            .slots-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .action-btns {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
-
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="logo">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Logo">  <!-- Replace with your logo -->
-            <h1>AGC Admission Cell</h1>
+    <div class="dashboard-container">
+        <div class="page-header">
+            <h1 class="page-title">Manage Time Slots</h1>
+            <a href="{% url 'addslotadmin' %}" class="add-btn">
+                <i class="fas fa-plus"></i> Add New Slot
+            </a>
         </div>
-        <div class="nav-links">
-            <a href="{% url 'showslotadmin' %}"><i class="fas fa-calendar-alt"></i> Manage Slots</a>
-            <a href="{% url 'addslotadmin' %}"><i class="fas fa-plus-circle"></i> Add Slot</a>
-        </div>
-    </div>
 
-    <div class="container">
-        <h2>Manage Slots</h2>
-        <table>
+        <table class="slots-table">
             <thead>
                 <tr>
                     <th>Start Time</th>
@@ -143,35 +271,86 @@
             </thead>
             <tbody>
                 {% for slot in slots %}
-                    <tr>
-                        <td>{{ slot.start_time|date:"Y-m-d h:i A" }}</td>
-                        <td>{{ slot.end_time|date:"Y-m-d h:i A" }}</td>
+                    <tr style="animation-delay: {{ forloop.counter0|add:"1" }}00ms">
+                        <td>{{ slot.start_time|date:"M j, Y h:i A" }}</td>
+                        <td>{{ slot.end_time|date:"M j, Y h:i A" }}</td>
                         <td>{{ slot.teacher.name }}</td>
                         <td>
                             {% if slot.is_booked %}
-                                <span style="color: red; font-weight: bold;">Booked</span>
+                                <span class="status-badge status-booked">
+                                    <i class="fas fa-calendar-times"></i> Booked
+                                </span>
                             {% else %}
-                                <span style="color: green; font-weight: bold;">Available</span>
+                                <span class="status-badge status-available animate__animated animate__infinite" style="animation-name: gentlePulse; animation-duration: 3s;">
+                                    <i class="fas fa-calendar-check"></i> Available
+                                </span>
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{% url 'slot-update' slot.id %}" class="btn edit-btn"><i class="fas fa-edit"></i> Edit</a>
-                            <form method="post" action="{% url 'slot-delete' slot.id %}" style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn delete-btn" onclick="return confirm('Are you sure?');">
-                                    <i class="fas fa-trash-alt"></i> Delete
-                                </button>
-                            </form>
+                            <div class="action-btns">
+                                <a href="{% url 'slot-update' slot.id %}" class="action-btn edit-btn">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <form method="post" action="{% url 'slot-delete' slot.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this slot?');">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="5">No slots available.</td>
+                        <td colspan="5" class="empty-state">
+                            <i class="far fa-calendar-times" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                            <p>No slots available. Create your first slot to get started.</p>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover animation to table rows
+            const rows = document.querySelectorAll('.slots-table tr:not(:first-child)');
+            rows.forEach(row => {
+                row.style.transition = 'all 0.4s ease';
+                
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px)';
+                    this.style.boxShadow = '0 6px 12px rgba(0,0,0,0.08)';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                });
+            });
+
+            // Button click animations
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    if (!this.classList.contains('delete-btn') || confirm('Are you sure you want to delete this slot?')) {
+                        this.classList.add('animate__animated', 'animate__pulse');
+                        setTimeout(() => {
+                            this.classList.remove('animate__animated', 'animate__pulse');
+                        }, 1000);
+                    } else {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Gentle pulse for available slots
+            const availableBadges = document.querySelectorAll('.status-available');
+            availableBadges.forEach(badge => {
+                badge.style.animation = 'gentlePulse 3s infinite ease-in-out';
+            });
+        });
+    </script>
 </body>
 </html>
+{% endblock %}

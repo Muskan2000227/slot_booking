@@ -21,6 +21,12 @@ class register_model(models.Model):
 class Teacher(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
+    password = models.CharField(max_length=40)
+    STATUS_CHOICES = [
+        ('Free', 'Free'),
+        ('Busy', 'Busy'),
+    ]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Free')
 
     def __str__(self):
         return self.name
@@ -82,6 +88,14 @@ class Slot(models.Model):
             fail_silently=False,
         )
 
+class adminregister(models.Model):
+    username=models.CharField(max_length=70)
+    email=models.EmailField()
+    passw=models.CharField(max_length=40)
+    cpassw=models.CharField(max_length=40)
+    phone_no=models.CharField(max_length=100,blank=True,null=True)
 
+    def __str__(self):
+        return f"{self.id} - {self.email}"
   
 

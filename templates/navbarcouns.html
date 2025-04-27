@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGC Counsellor Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5C55E8;
+            --primary-dark: #443DD1;
+            --primary-light: #7D77FF;
+            --white: #ffffff;
+            --off-white: #f8f9fa;
+            --shadow: 0 4px 12px rgba(92, 85, 232, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--off-white);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Compact Navbar */
+        .navbar {
+            background: var(--primary-color);
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 100%;
+            margin-left: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar .logo:hover {
+            transform: translateX(3px);
+        }
+
+        .navbar .logo img {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .navbar .logo h1 {
+            color: var(--white);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            margin-right: 20px;
+        }
+
+        .navbar .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            padding: 0 15px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .navbar .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Active link indicator */
+        .navbar .nav-links a.active {
+            font-weight: 600;
+        }
+
+        .navbar .nav-links a.active::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--white);
+            animation: expandLine 0.3s ease-out;
+        }
+
+        @keyframes expandLine {
+            from { 
+                left: 50%;
+                right: 50%;
+            }
+            to { 
+                left: 0;
+                right: 0;
+            }
+        }
+
+        .navbar .nav-links .logout {
+            background-color: var(--white);
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-left: 15px;
+            border-radius: 4px;
+            padding: 6px 12px;
+            transition: all 0.2s ease;
+        }
+
+        .navbar .nav-links .logout:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                height: auto;
+                padding: 10px 0;
+            }
+            
+            .navbar .logo {
+                margin: 0;
+                padding: 10px 0;
+                justify-content: center;
+            }
+            
+            .navbar .nav-links {
+                flex-direction: column;
+                width: 100%;
+                margin: 10px 0 0 0;
+            }
+            
+            .navbar .nav-links a {
+                padding: 12px 0;
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .navbar .nav-links .logout {
+                margin: 10px auto;
+                width: 80%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="AGC Logo">
+            <h1>AGC Admission Cell</h1>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'teacherslots' %}" id="appointments-link">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Appointments</span>
+            </a>
+            <a href="{% url 'counsellor_dashboard' %}" id="status-link">
+                <i class="fas fa-user-tie"></i>
+                <span>Teacher Status</span>
+            </a>
+            <a href="{% url 'counsellor_logout' %}" class="logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get current path and set active link
+            const currentPath = window.location.pathname;
+            const appointmentsLink = document.getElementById('appointments-link');
+            const statusLink = document.getElementById('status-link');
+            
+            // Remove active class from both initially
+            appointmentsLink.classList.remove('active');
+            statusLink.classList.remove('active');
+            
+            // Set active class based on current path
+            if (currentPath.includes('teacherslots') || currentPath.endsWith('/')) {
+                appointmentsLink.classList.add('active');
+            } else if (currentPath.includes('counsellor_dashboard')) {
+                statusLink.classList.add('active');
+            }
+            
+            // Add click handlers to properly set active state
+            appointmentsLink.addEventListener('click', function() {
+                statusLink.classList.remove('active');
+                this.classList.add('active');
+            });
+            
+            statusLink.addEventListener('click', function() {
+                appointmentsLink.classList.remove('active');
+                this.classList.add('active');
+            });
+            
+            // Add click animation
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+

@@ -1,128 +1,377 @@
+{% extends 'navbaradmin.html'%}
 {% block content %}
-<!-- Navbar -->
-<div class="navbar">
-    <div class="logo">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Logo"> <!-- Replace with your logo -->
-        <h1>AGC Admission Cell</h1>
-    </div>
-    <div class="nav-links">
-        <a href="{% url 'showslotadmin' %}"><i class="fas fa-calendar-alt"></i> Manage Slots</a>
-        <a href="{% url 'addslotadmin' %}"><i class="fas fa-plus-circle"></i> Add Slot</a>
-    </div>
-</div>
 
-<div class="container">
-    <h2>Add Slot</h2>
-
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li class="{{ message.tags }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    <form method="post">
-        {% csrf_token %}
+<div class="slot-container animate__animated animate__fadeIn">
+    <div class="slot-card animate__animated animate__slideInUp">
+        <h2 class="slot-header">Add New Slot</h2>
         
-        <!-- Start Time Input -->
-        <label for="start_time">Select Start Time:</label>
-        <input type="datetime-local" id="start_time" name="start_time" required>
+        <!-- Status Messages with animation -->
+        {% if messages.error %}
+        <div class="alert error-message animate__animated animate__fadeIn">
+            <i class="fas fa-exclamation-circle"></i> {{ messages.error }}
+        </div>
+        {% endif %}
+        {% if messages.success %}
+        <div class="alert success-message animate__animated animate__fadeIn">
+            <i class="fas fa-check-circle"></i> {{ messages.success }}
+        </div>
+        {% endif %}
 
-        <p>Selected Start Time: <span id="formatted_start_time"></span></p>
+        <form method="post" class="slot-form">
+            {% csrf_token %}
+            
+            <!-- Start Time Input -->
+            <div class="form-group animate__animated animate__fadeInLeft" style="animation-delay: 0.1s">
+                <label for="start_time" class="form-label">
+                    <i class="far fa-clock"></i> Start Time
+                </label>
+                <input type="datetime-local" id="start_time" name="start_time" class="form-input" required>
+                <div class="time-preview">
+                    Selected Start: <span id="formatted_start_time" class="time-value">--:-- --</span>
+                </div>
+            </div>
 
-        <!-- End Time Input -->
-        <label for="end_time">Select End Time:</label>
-        <input type="datetime-local" id="end_time" name="end_time" required>
+            <!-- End Time Input -->
+            <div class="form-group animate__animated animate__fadeInLeft" style="animation-delay: 0.2s">
+                <label for="end_time" class="form-label">
+                    <i class="far fa-clock"></i> End Time
+                </label>
+                <input type="datetime-local" id="end_time" name="end_time" class="form-input" required>
+                <div class="time-preview">
+                    Selected End: <span id="formatted_end_time" class="time-value">--:-- --</span>
+                </div>
+            </div>
 
-        <p>Selected End Time: <span id="formatted_end_time"></span></p>
 
-        <!-- Select Teacher -->
-        <label for="teacher">Select Teacher:</label>
-        <select id="teacher" name="teacher" required>
-            <option value="">-- Choose Teacher --</option>
-            {% for teacher in teachers %}
-                <option value="{{ teacher.id }}">{{ teacher.name }}</option>
-            {% endfor %}
-        </select>
+          
+            <!-- Teacher Selection -->
+            <div class="form-group animate__animated animate__fadeInLeft" style="animation-delay: 0.3s">
+                <label for="teacher" class="form-label">
+                    <i class="fas fa-user-tie"></i> Select Teacher
+                </label>
+                <select id="teacher" name="teacher" class="form-select" required>
+                    <option value="">-- Choose Teacher --</option>
+                    {% for teacher in teachers %}
+                        <option value="{{ teacher.id }}">{{ teacher.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        
-        <button type="submit">Add Slot</button>
-    </form>
+            <button type="submit" class="submit-btn animate__animated animate__fadeInUp" style="animation-delay: 0.4s">
+                <i class="fas fa-plus-circle"></i> Add Slot
+            </button>
+        </form>
+    </div>
 </div>
 
 <style>
-    /* Navbar Styling */
-    .navbar {
-        background-color: #007bff;
-        padding: 15px 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    :root {
+        --primary: #4F46E5;
+        --primary-light: #6366F1;
+        --success: #10B981;
+        --danger: #EF4444;
+        --light: #f8f9fa;
+        --dark: #1e293b;
+        --gray: #94a3b8;
     }
 
-    .navbar .logo {
-        display: flex;
-        align-items: center;
-    }
-
-    .navbar .logo img {
-        width: 40px;
-        height: 40px;
-        margin-right: 10px;
-    }
-
-    .navbar .logo h1 {
-        color: white;
-        font-size: 22px;
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f1f5f9;
         margin: 0;
-        font-weight: bold;
+        padding: 0;
+        color: #334155;
+        overflow: hidden;
     }
 
-    .navbar .nav-links a {
-        color: white;
-        text-decoration: none;
-        padding: 10px 15px;
-        font-size: 16px;
-        border-radius: 5px;
-        transition: 0.3s;
-        margin: 0 5px;
-    }
-
-    .navbar .nav-links a:hover {
-        background-color: white;
-        color: #007bff;
-    }
-
-    /* Form Styling */
-    .container {
-        max-width: 600px;
-        margin: auto;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-    }
-
-    h2 { text-align: center; }
-
-    label, select, input {
-        display: block;
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
-    button {
-        width: 100%;
-        background-color: #28a745;
-        color: white;
+    .slot-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* min-height: calc(100vh - 60px); */
+        margin-top: 30px;
         padding: 10px;
-        border: none;
-        border-radius: 5px;
     }
 
+    .slot-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        padding: 2rem;
+        width: 100%;
+        max-width: 600px;
+        transform: translateY(20px);
+        opacity: 0;
+        animation-fill-mode: forwards;
+    }
+
+    .slot-header {
+        color: var(--primary);
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    .slot-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(to right, var(--primary), var(--success));
+        border-radius: 3px;
+    }
+
+    .alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.95rem;
+        transform: scale(0.95);
+        opacity: 0;
+        animation-fill-mode: forwards;
+    }
+
+    .error-message {
+        background-color: #FEE2E2;
+        color: #B91C1C;
+        border-left: 4px solid var(--danger);
+    }
+
+    .success-message {
+        background-color: #D1FAE5;
+        color: #065F46;
+        border-left: 4px solid var(--success);
+    }
+
+    .slot-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        transform: translateX(-10px);
+        opacity: 0;
+        animation-fill-mode: forwards;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-input, .form-select {
+        padding: 12px 14px;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+
+    .form-input:focus, .form-select:focus {
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        outline: none;
+        transform: translateY(-2px);
+    }
+
+    .time-preview {
+        font-size: 0.9rem;
+        color: var(--gray);
+        margin-top: 4px;
+    }
+
+    .time-value {
+        font-weight: 500;
+        color: var(--dark);
+    }
+
+    .submit-btn {
+        background: linear-gradient(to right, var(--primary), var(--primary-light));
+        color: white;
+        padding: 14px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 0.5rem;
+        transform: translateY(10px);
+        opacity: 0;
+        animation-fill-mode: forwards;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+    }
+
+    /* Animation classes */
+    .animate__fadeIn {
+        animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    .animate__slideInUp {
+        animation: slideInUp 0.5s ease-out forwards;
+    }
+
+    .animate__fadeInLeft {
+        animation: fadeInLeft 0.5s ease-out forwards;
+    }
+
+    .animate__fadeInUp {
+        animation: fadeInUp 0.5s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideInUp {
+        from { 
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to { 
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInLeft {
+        from { 
+            opacity: 0;
+            transform: translateX(-10px);
+        }
+        to { 
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from { 
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to { 
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .slot-card {
+            padding: 1.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .slot-card {
+            padding: 1.2rem;
+        }
+        
+        .slot-header {
+            font-size: 1.4rem;
+        }
+    }
 </style>
+
+<!-- <script>
+    function validateTime(input) {
+        const selectedTime = new Date(input.value);
+        const hour = selectedTime.getHours();
+
+        // Check if outside working hours
+        if (hour < 9 || hour > 16) {
+            alert("Please select a time between 09:00 AM and 4:59 PM!");
+            input.value = ""; // Clear the invalid input
+        }
+        // Check if during lunch break (1 PM - 1:59 PM)
+        else if (hour === 13) {
+            alert("1:00 PM to 2:00 PM is lunch break! Please choose another time.");
+            input.value = ""; // Clear the invalid input
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const startTimeInput = document.getElementById('start_time');
+        const endTimeInput = document.getElementById('end_time');
+
+        startTimeInput.addEventListener('change', function() {
+            validateTime(this);
+        });
+
+        endTimeInput.addEventListener('change', function() {
+            validateTime(this);
+        });
+    });
+</script> -->
+
+
+<script>
+    function validateTime(input) {
+        if (!input.value) return; // no value, do nothing
+
+        const selectedTime = new Date(input.value);
+        const now = new Date();
+        
+        const hour = selectedTime.getHours();
+
+        // Check if selected time is in the past
+        if (selectedTime < now) {
+            alert("You cannot select a past time!");
+            input.value = "";
+        }
+        // Check if outside working hours
+        else if (hour < 9 || hour > 16) {
+            alert("Please select a time between 09:00 AM and 4:59 PM!");
+            input.value = "";
+        }
+        // Check if during lunch break (1 PM - 1:59 PM)
+        else if (hour === 13) {
+            alert("1:00 PM to 2:00 PM is lunch break! Please choose another time.");
+            input.value = "";
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const startTimeInput = document.getElementById('start_time');
+        const endTimeInput = document.getElementById('end_time');
+
+        startTimeInput.addEventListener('change', function() {
+            validateTime(this);
+        });
+
+        endTimeInput.addEventListener('change', function() {
+            validateTime(this);
+        });
+    });
+</script>
+
+
+
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -182,6 +431,22 @@
 
         document.getElementById("start_time").addEventListener("focus", setMinDateTime);
         document.getElementById("start_time").addEventListener("change", updateEndTime);
+        
+        // Add ripple effect to submit button
+        const submitBtn = document.querySelector('.submit-btn');
+        submitBtn.addEventListener('click', function(e) {
+            let x = e.clientX - e.target.getBoundingClientRect().left;
+            let y = e.clientY - e.target.getBoundingClientRect().top;
+            
+            let ripple = document.createElement('span');
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 1000);
+        });
     });
 </script>
 

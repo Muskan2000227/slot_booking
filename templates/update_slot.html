@@ -1,22 +1,74 @@
+{% extends 'navbaradmin.html' %}
+{% block content %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Slot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <style>
+        :root {
+            --primary: #5D5DED;
+            --primary-light: #7D7DFF;
+            --primary-dark: #4545D6;
+            --accent: #FF7D7D;
+            --text: #333344;
+            --text-light: #666677;
+            --bg: #F5F5FF;
+            --card-bg: #FFFFFF;
+        }
+        
         /* General Styles */
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f4f4f4;
+            background-color: var(--bg);
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        
+        .slide-up {
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .pulse-hover:hover {
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         /* Navbar */
         .navbar {
-            background-color: #007bff;
+            background-color: var(--primary);
             padding: 15px 20px;
             display: flex;
             justify-content: space-between;
@@ -48,123 +100,236 @@
             padding: 10px 15px;
             font-size: 16px;
             border-radius: 5px;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             margin: 0 5px;
         }
 
         .navbar .nav-links a:hover {
             background-color: white;
-            color: #007bff;
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         /* Page Content */
         .container {
             width: 40%;
             margin: 50px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(93, 93, 237, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(93, 93, 237, 0.15);
         }
 
         h2 {
             text-align: center;
-            color: #333;
+            color: var(--primary-dark);
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            border-radius: 3px;
         }
 
         form {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 20px;
         }
 
+        .form-group {
+            position: relative;
+        }
+        
         label {
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            color: var(--text-light);
+            transition: all 0.3s ease;
         }
 
         input, select {
-            padding: 10px;
+            padding: 12px 15px;
             font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             width: 100%;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(93, 93, 237, 0.2);
+            outline: none;
+            background-color: white;
+        }
+        
+        input:hover, select:hover {
+            border-color: #aaa;
         }
 
         button {
-            background-color: #007bff;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: white;
-            padding: 10px;
+            padding: 12px;
             border: none;
             cursor: pointer;
             font-size: 16px;
-            border-radius: 5px;
-            transition: 0.3s;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+            box-shadow: 0 4px 6px rgba(93, 93, 237, 0.2);
         }
-
+        
         button:hover {
-            background-color: #0056b3;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(93, 93, 237, 0.25);
+        }
+        
+        button:active {
+            transform: translateY(0);
         }
 
         .back-link {
             text-align: center;
-            margin-top: 10px;
+            margin-top: 20px;
         }
-
+        
         .back-link a {
             text-decoration: none;
-            color: #007bff;
+            color: var(--primary);
             font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
-
+        
         .back-link a:hover {
-            text-decoration: underline;
+            color: var(--primary-dark);
+            text-decoration: none;
+            transform: translateX(-3px);
+        }
+        
+        .back-link a i {
+            transition: transform 0.3s ease;
+            color: var(--primary);
+        }
+        
+        .back-link a:hover i {
+            transform: translateX(-5px);
+        }
+        
+        /* Checkbox styling */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            width: auto;
+            transform: scale(1.3);
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 992px) {
+            .container {
+                width: 60%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                width: 80%;
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                width: 95%;
+                margin: 30px auto;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="logo">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Logo">  <!-- Replace with your logo -->
-            <h1>AGC Admission Cell</h1>
-        </div>
-        <div class="nav-links">
-            <a href="{% url 'showslotadmin' %}"><i class="fas fa-calendar-alt"></i> Manage Slots</a>
-            <a href="{% url 'addslotadmin' %}"><i class="fas fa-plus-circle"></i> Add Slot</a>  <!-- Corrected URL -->
-        </div>
-    </div>
-
-    <div class="container">
-        <h2>Edit Slot</h2>
-        <form method="post">
+    <div class="container slide-up">
+        <h2 class="fade-in">Edit Slot</h2>
+        <form method="post" class="fade-in" style="animation-delay: 0.2s">
             {% csrf_token %}
 
-            <label>Start Time:</label>
-            <input type="datetime-local" name="start_time" value="{{ slot.start_time|date:'Y-m-d\TH:i' }}" required>
+            <div class="form-group" style="padding-right: 30px;">
+                <label for="start_time">Start Time:</label>
+                <input type="datetime-local"  id="start_time" name="start_time" value="{{ slot.start_time|date:'Y-m-d\TH:i' }}" required>
+            </div>
 
-            <label>End Time:</label>
-            <input type="datetime-local" name="end_time" value="{{ slot.end_time|date:'Y-m-d\TH:i' }}" required>
+            <div class="form-group" style="padding-right: 30px;">
+                <label for="end_time">End Time:</label>
+                <input type="datetime-local" id="end_time" name="end_time" value="{{ slot.end_time|date:'Y-m-d\TH:i' }}" required>
+            </div>
 
-            <label>Teacher:</label>
-            <select name="teacher">
-                {% for teacher in teachers %}
-                    <option value="{{ teacher.id }}" {% if teacher.id == slot.teacher.id %}selected{% endif %}>
-                        {{ teacher.name }}
-                    </option>
-                {% endfor %}
-            </select>
+            <div class="form-group">
+                <label for="teacher">Teacher:</label>
+                <select id="teacher" name="teacher">
+                    {% for teacher in teachers %}
+                        <option value="{{ teacher.id }}" {% if teacher.id == slot.teacher.id %}selected{% endif %}>
+                            {{ teacher.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-            <label>Booked:</label>
-            <input type="checkbox" name="is_booked" {% if slot.is_booked %}checked{% endif %}>
+            <div class="form-group">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="is_booked"  name="is_booked" {% if slot.is_booked %}checked{% endif %}>
+                    <label for="is_booked" style="margin-bottom: 0; cursor: pointer;">Booked</label>
+                </div>
+            </div>
 
-            <button type="submit">Save Changes</button>
+            <button type="submit" class="pulse-hover">Save Changes <i class="fas fa-save"></i></button>
         </form>
-        <div class="back-link">
-            <a href="{% url 'showslotadmin' %}">← Back to Slots</a>
+        <div class="back-link fade-in" style="animation-delay: 0.4s">
+            <a href="{% url 'showslotadmin' %}"><i class="fas fa-arrow-left"></i> Back to Slots</a>
         </div>
     </div>
 
+    <script>
+        // Add animation to form elements on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const formGroups = document.querySelectorAll('.form-group');
+            formGroups.forEach((group, index) => {
+                group.style.animation = `fadeIn 0.5s ease-out ${index * 0.1 + 0.3}s forwards`;
+                group.style.opacity = '0';
+            });
+        });
+    </script>
 </body>
 </html>
+{% endblock %}

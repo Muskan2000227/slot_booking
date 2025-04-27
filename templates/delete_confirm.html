@@ -1,3 +1,6 @@
+{% extends 'navbaradmin.html' %}
+{% block content %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,17 +110,7 @@
 </head>
 <body>
 
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="logo">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Logo">  <!-- Replace with your logo -->
-            <h1>AGC Admission Cell</h1>
-        </div>
-        <div class="nav-links">
-            <a href="{% url 'showslotadmin' %}"><i class="fas fa-calendar-alt"></i> Manage Slots</a>
-            <a href="{% url 'addslotadmin' %}"><i class="fas fa-plus-circle"></i> Add Slot</a>
-        </div>
-    </div>
+   
 
     <div class="container">
         <h2>Are you sure you want to delete this slot?</h2>
@@ -130,3 +123,4 @@
 
 </body>
 </html>
+{% endblock %}

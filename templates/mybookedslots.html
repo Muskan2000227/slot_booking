@@ -1,3 +1,5 @@
+{% extends 'navbaruser.html' %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,64 +10,16 @@
         /* General Styles */
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f5f7ff;
             margin: 0;
             padding: 0;
             text-align: center;
         }
 
-        /* Navbar */
-        .navbar {
-            background-color: #007bff;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .navbar .logo h1 {
-            color: white;
-            font-size: 22px;
-            margin: 0;
-            font-weight: bold;
-        }
-
-        .navbar .nav-links a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            border-radius: 5px;
-            transition: 0.3s;
-            margin: 0 5px;
-        }
-
-        .navbar .nav-links a:hover {
-            background-color: white;
-            color: #007bff;
-        }
-
-        .logout-btn {
-            background-color: #dc3545;
-            padding: 10px 15px;
-            border-radius: 5px;
-        }
-
-        .logout-btn:hover {
-            background-color: white;
-            color: #dc3545;
+        h2 {
+            color: #5C55E8;
+            margin-top: 30px;
+            font-size: 2em;
         }
 
         /* Table Styling */
@@ -92,7 +46,7 @@
         }
 
         th {
-            background-color: #007bff;
+            background-color: #5C55E8;
             color: white;
         }
 
@@ -112,6 +66,7 @@
             transition: 0.3s;
             display: inline-block;
             font-weight: bold;
+            margin: 0 5px;
         }
 
         .cancel-btn {
@@ -124,31 +79,19 @@
         }
 
         .reschedule-btn {
-            background-color: #ff9800;
+            background-color: #5C55E8;
             color: white;
         }
 
         .reschedule-btn:hover {
-            background-color: #e68900;
+            background-color: #4A43D6;
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="logo">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Logo"> 
-            <h1>AGC Admission Cell</h1>
-        </div>
-        <div class="nav-links">
-            <a href="{% url 'available_slots' %}"><i class="fas fa-calendar-alt"></i> Available Slots</a>
-            <a href="{% url 'mybookedslots' %}"><i class="fas fa-plus-circle"></i> My Slots</a>
-            <a href="{% url 'logout' %}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </div>
-    </div>
-
     <h2>My Booked Slots</h2>
+    <p style="margin-left: 1100px;margin-top: -40px;">{{email}}</p>
 
     <div class="table-container">
         {% if slots %}
@@ -169,7 +112,6 @@
                class="cancel-btn"
                onclick="return confirmCancel();">Cancel</a>
                     <a href="{% url 'reschedule_slot' slot.id %}" class="reschedule-btn">Reschedule</a>
-
                 </td>
             </tr>
             {% endfor %}
@@ -187,3 +129,4 @@
     }
 </script>
 </html>
+{% endblock %}

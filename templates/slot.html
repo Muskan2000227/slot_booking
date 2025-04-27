@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Slot Booking</title>
+</head>
+<body>
+    <h1>Real-Time Slot Display</h1>
+    <div id="student-info">Waiting for active slot...</div>
+
+    <script>
+        const socket = new WebSocket('ws://localhost:8000/ws/slots/');
+
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            const info = document.getElementById('student-info');
+
+            if (data.message) {
+                info.innerText = data.message;
+            } else {
+                info.innerText = `Slot: ${data.start_time} to ${data.end_time},
+                                  Teacher: ${data.teacher},
+                                  Booked By: ${data.booked_by}`;
+            }
+        };
+
+        // Send a message to the WebSocket every 60 seconds to check for active slots
+        setInterval(() => {
+            socket.send('check_slot');
+        }, 60000); // Every minute
+    </script>
+</body>
+</html>

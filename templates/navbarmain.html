@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGC Admission Portal</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Navbar Styling with unique class names */
+        .agc-navbar {
+            background: linear-gradient(135deg, #6359e5, #5853EA);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    
+        .agc-navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+    
+        .agc-navbar-logo {
+            width: 2.5rem;
+            height: 2.5rem;
+            object-fit: contain;
+        }
+    
+        .agc-navbar-title {
+            color: white;
+            font-size: 1.4rem;
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+    
+        .agc-navbar-menu {
+            display: flex;
+            gap: 0.5rem;
+        }
+    
+        .agc-navbar-item {
+            color: white;
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            font-size: 1rem;
+            border-radius: 0.4rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+    
+        .agc-navbar-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+    
+        .agc-navbar-icon {
+            font-size: 1.1rem;
+        }
+
+        .agc-navbar-item-text {
+            display: inline-block;
+        }
+    
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .agc-navbar {
+                padding: 0.8rem 1rem;
+                flex-wrap: wrap;
+            }
+            
+            .agc-navbar-brand {
+                margin-bottom: 0.5rem;
+            }
+            
+            .agc-navbar-menu {
+                width: 100%;
+                justify-content: space-around;
+                flex-wrap: wrap;
+            }
+            
+            .agc-navbar-item {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .agc-navbar-item-text {
+                display: none;
+            }
+
+            .agc-navbar-title {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Active state */
+        .agc-navbar-item.active {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body style="overflow: hidden;">
+    <nav class="agc-navbar">
+        <a href="{% url 'index' %}" class="agc-navbar-brand">
+            <img src="{% static 'agc.png' %}" alt="AGC Logo" class="agc-navbar-logo" >
+            <h1 class="agc-navbar-title">AGC Admission Cell</h1>
+        </a>
+        <div class="agc-navbar-menu">
+            <a href="{% url 'index' %}" class="agc-navbar-item {% if request.path == '/' %}active{% endif %}">
+                <i class="fas fa-home agc-navbar-icon"></i>
+                <span class="agc-navbar-item-text">Home</span>
+            </a>
+            <a href="{% url 'adminlogin' %}" class="agc-navbar-item {% if 'admin' in request.path %}active{% endif %}">
+                <i class="fas fa-user-shield agc-navbar-icon"></i>
+                <span class="agc-navbar-item-text">Admin</span>
+            </a>
+            <a href="{% url 'login' %}" class="agc-navbar-item {% if 'student' in request.path %}active{% endif %}">
+                <i class="fas fa-user-graduate agc-navbar-icon"></i>
+                <span class="agc-navbar-item-text">Student</span>
+            </a>
+            <a href="{% url 'counsellorlogin' %}" class="agc-navbar-item {% if 'counsellor' in request.path %}active{% endif %}">
+                <i class="fas fa-hands-helping agc-navbar-icon"></i>
+                <span class="agc-navbar-item-text">Counsellor</span>
+            </a>
+        </div>
+    </nav>
+
+{% block content %}
+{% endblock %}
+
+<!-- <img src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/000000/external-admission-university-flaticons-flat-flat-icons.png" alt="Admission" class="admission-icon"> -->

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Slots Dashboard | AGC</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #6366F1;
+            --primary-dark: #4338CA;
+            --accent: #93c5fd;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --success: #10B981;
+            --success-light: #A7F3D0;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6ecff 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Enhanced Container */
+        .live-slot-container {
+            width: 100%;
+            max-width: 1400px;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 
+                0 10px 25px rgba(79, 70, 229, 0.1),
+                0 5px 10px rgba(79, 70, 229, 0.04);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(79, 70, 229, 0.1);
+            margin: 20px auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glossy Header */
+        .live-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .live-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 3px;
+        }
+
+        h2 {
+            color: var(--primary-dark);
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+        }
+
+        /* Modern Time Display */
+        .live-time {
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            padding: 10px 18px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .live-time:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        /* Premium Table Design */
+        .slot-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.03);
+        }
+
+        .slot-table thead {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+
+        .slot-table th {
+            padding: 18px;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            position: relative;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .slot-table th:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 20%;
+            height: 60%;
+            width: 1px;
+            background: rgba(255,255,255,0.3);
+        }
+
+        .slot-table td {
+            padding: 16px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            background: white;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .slot-table tbody tr:nth-child(even) td {
+            background: rgba(248, 250, 252, 0.7);
+        }
+
+        .slot-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .slot-table tbody tr:hover td {
+            background-color: rgba(79, 70, 229, 0.05);
+            transform: translateX(3px);
+            box-shadow: 3px 0 0 var(--primary-light) inset;
+        }
+
+        /* Highlight Animation */
+        .new-slot {
+            animation: highlightEffect 2s ease-out;
+        }
+
+        @keyframes highlightEffect {
+            0% { 
+                background-color: rgba(255, 235, 59, 0.3); 
+                transform: scale(1.02);
+            }
+            100% { 
+                background-color: white; 
+                transform: scale(1);
+            }
+        }
+
+        /* Attractive Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 50px 30px;
+            color: #64748b;
+            position: relative;
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+            opacity: 0.8;
+        }
+
+        .empty-state h3 {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Floating Refresh Button */
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 4px 15px rgba(79, 70, 229, 0.3),
+                0 0 0 2px white,
+                0 0 0 4px rgba(79, 70, 229, 0.2);
+            border: none;
+            z-index: 100;
+        }
+
+        .refresh-btn:hover {
+            transform: rotate(180deg) scale(1.1);
+            box-shadow: 
+                0 6px 20px rgba(79, 70, 229, 0.4),
+                0 0 0 2px white,
+                0 0 0 4px rgba(79, 70, 229, 0.3);
+        }
+
+        .refresh-btn::after {
+            content: 'Refresh Data';
+            position: absolute;
+            right: 60px;
+            white-space: nowrap;
+            background: var(--dark);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .refresh-btn:hover::after {
+            opacity: 1;
+            right: 65px;
+        }
+
+        /* Enhanced Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            box-shadow: 0 2px 5px rgba(16, 185, 129, 0.1);
+        }
+
+        .status-active::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+        }
+
+        .status-ended {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+            box-shadow: 0 2px 5px rgba(239, 68, 68, 0.1);
+        }
+
+        .status-ended::before {
+            content: '\f00d';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+        }
+
+        /* Premium End Slot Button */
+        .end-slot-btn {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        .end-slot-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        .end-slot-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Notification Pulse */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive design */
+        @media (max-width: 992px) {
+            .live-slot-container {
+                padding: 25px;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .live-slot-container {
+                padding: 20px;
+            }
+            
+            .slot-table th, 
+            .slot-table td {
+                padding: 14px 10px;
+                font-size: 0.9rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            .refresh-btn {
+                width: 45px;
+                height: 45px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .live-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+                padding-bottom: 15px;
+            }
+            
+            .slot-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .empty-state {
+                padding: 30px 15px;
+            }
+            
+            .empty-state i {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Container -->
+<div class="live-slot-container">
+    <!-- Header -->
+    <div class="live-header">
+        <h2><i class="fas fa-calendar-check pulse"></i> Live Slot Dashboard</h2>
+        <div class="live-time">
+            <i class="fas fa-clock"></i>
+            <span id="live-time">Loading time...</span>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="slot-table">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-user-graduate"></i> Student</th>
+                    <th><i class="fas fa-chalkboard-teacher"></i> Teacher</th>
+                    <th><i class="fas fa-clock"></i> Time Slot</th>
+                    <th><i class="fas fa-info-circle"></i> Status</th>
+                    <th><i class="fas fa-cogs"></i> Actions</th>
+                </tr>
+            </thead>
+            <tbody id="slot-table">
+                <tr>
+                    <td colspan="5" class="empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <h3>No Active Sessions</h3>
+                        <p>Currently there are no live admission slots. New sessions will appear here automatically.</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Floating Refresh Button -->
+<button class="refresh-btn" id="refresh-btn" title="Refresh">
+    <i class="fas fa-sync-alt"></i>
+</button>
+
+<!-- Notification Sound -->
+<audio id="notification-sound" preload="auto">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" type="audio/mpeg">
+</audio>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Function to get CSRF token
+    function getCSRFToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
+
+    // Update live clock
+    function updateLiveTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+        const dateString = now.toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'short',
+            day: 'numeric'
+        });
+        document.getElementById("live-time").innerHTML = `${dateString} &bull; ${timeString}`;
+    }
+    setInterval(updateLiveTime, 1000);
+    updateLiveTime();
+
+    // Play notification sound
+    function playNotification() {
+        const sound = document.getElementById("notification-sound");
+        sound.currentTime = 0;
+        sound.play().catch(error => {
+            console.log("Autoplay blocked. Click to enable sounds.");
+        });
+    }
+
+    // Fetch live slots data
+    let previousSlots = [];
+    async function fetchLiveSlots() {
+        try {
+            const response = await fetch('/get_live_slots');
+            const data = await response.json();
+            const slotTable = document.getElementById("slot-table");
+            
+            if (data.slots.length === 0) {
+                slotTable.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <i class="fas fa-calendar-times"></i>
+                            <h3>No Active Sessions</h3>
+                            <p>Currently there are no live admission slots. New sessions will appear here automatically.</p>
+                        </td>
+                    </tr>
+                `;
+                previousSlots = [];
+                return;
+            }
+
+            // Check for new slots
+            const newSlots = data.slots.filter(slot => 
+                !previousSlots.some(prev => 
+                    prev.student === slot.student && 
+                    prev.teacher === slot.teacher &&
+                    prev.start_time === slot.start_time
+                )
+            );
+
+            // Play sound if new slots found
+            if (newSlots.length > 0) {
+                playNotification();
+            }
+
+            // Update table
+            slotTable.innerHTML = data.slots.map(slot => `
+                <tr class="${newSlots.some(s => s.student === slot.student) ? 'new-slot' : ''}">
+                    <td><strong>${slot.student}</strong></td>
+                    <td>${slot.teacher}</td>
+                    <td><span class="text-primary">${slot.start_time}</span> - <span class="text-primary">${slot.end_time}</span></td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                    <td>
+                        ${slot.can_end ? 
+                            `<button class="btn btn-sm end-slot-btn" data-slot-id="${slot.id}">
+                                <i class="fas fa-stop-circle"></i> End Session
+                            </button>` : 
+                            '<span class="text-muted small">No actions</span>'
+                        }
+                    </td>
+                </tr>
+            `).join('');
+
+            // Add event listeners to end buttons
+            document.querySelectorAll('.end-slot-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const slotId = this.getAttribute('data-slot-id');
+                    endSlot(slotId);
+                });
+            });
+
+            previousSlots = data.slots;
+            
+        } catch (error) {
+            console.error("Error fetching live slots:", error);
+        }
+    }
+
+    // End slot function
+    async function endSlot(slotId) {
+        if (confirm('Are you sure you want to end this admission session?')) {
+            try {
+                const response = await fetch(`/end-slot/${slotId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken(),
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Visual feedback
+                    const btn = document.querySelector(`.end-slot-btn[data-slot-id="${slotId}"]`);
+                    if (btn) {
+                        btn.innerHTML = '<i class="fas fa-check"></i> Ended';
+                        btn.style.background = 'var(--success)';
+                        btn.style.pointerEvents = 'none';
+                    }
+                    
+                    setTimeout(() => {
+                        fetchLiveSlots(); // Refresh the list
+                    }, 1500);
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error ending slot:', error);
+                alert('Failed to end session. Please try again.');
+            }
+        }
+    }
+
+    // Manual refresh button
+    document.getElementById("refresh-btn").addEventListener("click", () => {
+        const btn = document.getElementById("refresh-btn");
+        btn.style.transform = "rotate(180deg) scale(1.1)";
+        setTimeout(() => {
+            btn.style.transform = "rotate(360deg) scale(1)";
+        }, 300);
+        fetchLiveSlots();
+    });
+
+    // Auto-refresh every 10 seconds
+    setInterval(fetchLiveSlots, 10000);
+    fetchLiveSlots();
+</script>
+</body>
+</html>

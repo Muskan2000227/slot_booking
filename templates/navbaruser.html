@@ -1,0 +1,199 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGC Admission Cell</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #5C55E8;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out;
+            /* padding-left: 50px; */
+        }
+
+        @keyframes slideDown {
+            from { 
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar .logo:hover img {
+            transform: rotate(15deg);
+        }
+
+        .navbar .logo h1 {
+            color: white;
+            font-size: 22px;
+            margin: 0;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .navbar .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .navbar .nav-links a:hover::before {
+            width: 80%;
+        }
+
+        .navbar .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .navbar .nav-links a i {
+            margin-right: 8px;
+        }
+
+        .logout-btn {
+            background-color: #dc3545;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: white;
+            color: #dc3545;
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Content Animation */
+        .content {
+            animation: fadeInUp 0.7s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Button pulse animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            <img src="{% static 'agc.png' %}" alt="Logo">
+            <h1>AGC Admission Cell</h1>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'available_slots' %}"><i class="fas fa-calendar-alt"></i>Available slots</a>
+            <a href="{% url 'mybookedslots' %}"><i class="fas fa-plus-circle"></i> My Slot</a>
+            <a href="{% url 'logout' %}" class="logout-btn pulse-animation"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script>
+        // Add hover effect to navbar items
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            link.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add click animation
+        document.querySelectorAll('a, button').forEach(element => {
+            element.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,369 @@
+{% extends 'navbaradmin.html' %}
+{% block content %}
+{% load static %}
+<body>
+    
+
+<div class="teacher-registration-container">
+    <div class="registration-wrapper animate__animated animate__fadeIn">
+        <div class="registration-card animate__animated animate__zoomIn">
+            <div class="card-header">
+                
+              <div class="header-icon animate__animated animate__bounceIn" style="display: flex;align-items: center;justify-content: center;gap:20px">  <i class="fas fa-chalkboard-teacher"></i>  
+                   <h3 class="animate__animated animate__fadeInDown">Teacher Registration</h3>
+              </div>
+                <p class="animate__animated animate__fadeIn">Join our counseling team</p>
+            </div>
+            
+            <div class="card-body">
+                {% if message %}
+                <div class="error-message animate__animated animate__shakeX">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>{{ message }}</span>
+                </div>
+                {% endif %}
+                
+                <form method="POST" class="animate__animated animate__fadeInUp">
+                    {% csrf_token %}
+                    
+                    <div class="form-group animate__animated" data-animation="fadeInRight">
+                        <div class="input-field">
+                            <i class="fas fa-user icon animate__animated animate__fadeInLeft"></i>
+                            <input type="text" name="username" placeholder="Username" required class="animate__animated animate__fadeInRight">
+                            <span class="focus-border animate__animated animate__fadeInRight"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group animate__animated" data-animation="fadeInLeft" style="animation-delay: 0.2s">
+                        <div class="input-field">
+                            <i class="fas fa-envelope icon animate__animated animate__fadeInRight"></i>
+                            <input type="email" name="email" placeholder="Email address" required class="animate__animated animate__fadeInLeft">
+                            <span class="focus-border animate__animated animate__fadeInLeft"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group animate__animated" data-animation="fadeInRight" style="animation-delay: 0.4s">
+                        <div class="input-field">
+                            <i class="fas fa-lock icon animate__animated animate__fadeInLeft"></i>
+                            <input type="password" name="pass" placeholder="Create password" required class="animate__animated animate__fadeInRight">
+                            <span class="focus-border animate__animated animate__fadeInRight"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group animate__animated" data-animation="fadeInLeft" style="animation-delay: 0.6s">
+                        <div class="input-field">
+                            <i class="fas fa-lock icon animate__animated animate__fadeInRight"></i>
+                            <input type="password" name="cpass" placeholder="Confirm password" required class="animate__animated animate__fadeInLeft">
+                            <span class="focus-border animate__animated animate__fadeInLeft"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn animate__animated animate__pulse animate__infinite">
+                        <i class="fas fa-user-plus animate__animated animate__rubberBand" style="animation-delay: 0.8s"></i>
+                        <span class="animate__animated animate__fadeIn" style="animation-delay: 0.9s">Register Account</span>
+                        <div class="btn-wave animate__animated animate__fadeIn" style="animation-delay: 1s"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<style>
+/* Your existing CSS remains exactly the same */
+body{
+    overflow: hidden;
+}
+    /* Main container - won't affect navbar */
+    .teacher-registration-container {
+        padding: 4.5rem;
+        /* min-height: calc(100vh - 60px); */
+        /* min-height: 100vh; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        overflow-y: hidden;
+    }
+
+    .registration-wrapper {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .registration-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    .registration-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #4F46E5, #6366F1);
+        color: white;
+        padding: 1rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: rgba(255,255,255,0.3);
+    }
+
+    .header-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: white;
+        text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .card-header h3 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.8rem;
+    }
+
+    .card-header p {
+        margin: 0.5rem 0 0;
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .error-message {
+        background: #FEE2E2;
+        color: #B91C1C;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        border-left: 4px solid #EF4444;
+    }
+
+    .error-message i {
+        font-size: 1.2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .input-field {
+        position: relative;
+    }
+
+    .input-field i {
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        transform: translateY(-50%);
+        color: #64748B;
+        transition: all 0.3s ease;
+    }
+
+    .input-field input {
+        width: 80%;
+        padding: 1rem 1rem 1rem 3rem;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .input-field input:focus {
+        border-color: #4F46E5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        outline: none;
+    }
+
+    .input-field input:focus + .focus-border {
+        width: 100%;
+    }
+
+    .input-field input:focus ~ i {
+        color: #4F46E5;
+        transform: translateY(-50%) scale(1.2);
+    }
+
+    .focus-border {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #4F46E5;
+        transition: width 0.4s ease;
+    }
+
+    .submit-btn {
+        background: linear-gradient(135deg, #4F46E5, #6366F1);
+        color: white;
+        border: none;
+        padding: 1rem;
+        width: 100%;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+    }
+
+    .submit-btn:active {
+        transform: translateY(0);
+    }
+
+    .btn-wave {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transform: translateX(-100%);
+    }
+
+    .submit-btn:hover .btn-wave {
+        animation: wave 1.5s infinite;
+    }
+
+    @keyframes wave {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #64748B;
+    }
+
+    .login-link a {
+        color: #4F46E5;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .login-link a:hover {
+        color: #6366F1;
+        text-decoration: underline;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .teacher-registration-container {
+            padding: 1rem;
+        }
+        
+        .card-header {
+            padding: 1.5rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize animations for form groups
+        const formGroups = document.querySelectorAll('.form-group');
+        formGroups.forEach(group => {
+            const animation = group.getAttribute('data-animation');
+            group.classList.add('animate__animated', `animate__${animation}`);
+        });
+
+        // Add focus/blur effects to input fields with animations
+        const inputs = document.querySelectorAll('.input-field input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('active');
+                // Add bounce animation to icon on focus
+                const icon = this.previousElementSibling;
+                icon.classList.add('animate__animated', 'animate__bounce');
+                setTimeout(() => {
+                    icon.classList.remove('animate__animated', 'animate__bounce');
+                }, 1000);
+            });
+            
+            input.addEventListener('blur', function() {
+                if (this.value === '') {
+                    this.parentElement.classList.remove('active');
+                }
+            });
+
+            // Check if input has value on load
+            if (input.value !== '') {
+                input.parentElement.classList.add('active');
+            }
+        });
+
+        // Enhanced button wave effect with animation
+        const submitBtn = document.querySelector('.submit-btn');
+        submitBtn.addEventListener('mouseenter', function() {
+            this.querySelector('.btn-wave').style.animation = 'wave 1.5s infinite';
+            // Add pulse animation to button on hover
+            this.classList.add('animate__animated', 'animate__pulse');
+        });
+        
+        submitBtn.addEventListener('mouseleave', function() {
+            this.classList.remove('animate__animated', 'animate__pulse');
+        });
+        
+        submitBtn.addEventListener('click', function() {
+            // Add click animation
+            this.classList.add('animate__animated', 'animate__rubberBand');
+            setTimeout(() => {
+                this.classList.remove('animate__animated', 'animate__rubberBand');
+            }, 1000);
+        });
+
+        // Animate form elements sequentially
+        const formElements = document.querySelectorAll('.card-body > *');
+        formElements.forEach((el, index) => {
+            el.style.animationDelay = `${index * 0.1}s`;
+        });
+
+        // Add floating animation to header icon
+        const headerIcon = document.querySelector('.header-icon i');
+        setInterval(() => {
+            headerIcon.classList.add('animate__animated', 'animate__swing');
+            setTimeout(() => {
+                headerIcon.classList.remove('animate__animated', 'animate__swing');
+            }, 1000);
+        }, 5000);
+    });
+</script>
+{% endblock %}

@@ -1,3 +1,5 @@
+{% extends 'navbaruser.html' %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,70 +17,6 @@
             text-align: center;
         }
 
-        /* Navbar */
-        .navbar {
-            background-color: #007bff;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .navbar .logo h1 {
-            color: white;
-            font-size: 22px;
-            margin: 0;
-            font-weight: bold;
-        }
-
-        .navbar .nav-links a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            border-radius: 5px;
-            transition: 0.3s;
-            margin: 0 5px;
-        }
-
-        .navbar .nav-links a:hover {
-            background-color: white;
-            color: #007bff;
-        }
-
-        .logout-btn {
-            background-color: #dc3545;
-            padding: 10px 15px;
-            border-radius: 5px;
-        }
-
-        .logout-btn:hover {
-            background-color: white;
-            color: #dc3545;
-        }
-
-
-
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
 
         .container {
             background: white;
@@ -129,18 +67,7 @@
     </style>
 </head>
 <body>
-<!-- Navbar -->
-    <div class="navbar">
-        <div class="logo">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Logo"> 
-            <h1>AGC Admission Cell</h1>
-        </div>
-        <div class="nav-links">
-            <a href="{% url 'available_slots' %}"><i class="fas fa-calendar-alt"></i> Available Slots</a>
-            <a href="{% url 'mybookedslots' %}"><i class="fas fa-plus-circle"></i> My Slots</a>
-            <a href="{% url 'logout' %}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </div>
-    </div>
+
 
 
     <div class="container">
@@ -172,3 +99,4 @@
     }
 </script>
 </html>
+{% endblock %}
