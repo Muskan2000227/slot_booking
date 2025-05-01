@@ -35,5 +35,26 @@ It uses **Django** for the backend and **HTML/CSS/JavaScript** for the frontend.
 - **Deployment**: PythonAnywhere
 
 ---
+## ⚙️ Getting Started
 
+### Run the following commands to set up the project:
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/slot-booking-system.git
+cd slot-booking-system
+
+# Install Django
+pip install django
+
+# Create superuser
+python manage.py createsuperuser
+
+# Run migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# Start the development server
+python manage.py runserver
+➡️ Visit http://127.0.0.1:8000/ in your browser.
 
